@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const passport = require("passport");
-const CLIENT_HOME_PAGE_URL = "https://www.socket.fi";
+const CLIENT_HOME_PAGE_URL = "https://www.app.socket.fi";
 // const CLIENT_HOME_PAGE_URL = "http://localhost:5173";
 // const CLIENT_HOME_PAGE_URL = "https://audaxious.com";
 
@@ -13,7 +13,7 @@ router.get("/login/success", (req, res) => {
       user: req.user,
       cookies: req.cookies,
     });
-  }else {
+  } else {
     //checking timeout issue
     res.status(401).json({
       success: false,

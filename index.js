@@ -22,38 +22,38 @@ mongoose
     console.error("Error connecting to mongo db:", err);
   });
 
-
-const MongoDBStore = connectMongoDBSession(session)
+const MongoDBStore = connectMongoDBSession(session);
 const sessionStore = new MongoDBStore({
   uri: keys.MONGODB_URI,
-  collection: 'sessions',
-  expires : 24 * 60 * 60
-})
+  collection: "sessions",
+  expires: 24 * 60 * 60,
+});
 
 app.use(
-    session({
-      name : "sessionSocket",
-      secret: process.env.COOKIE_KEY,
-      resave: false,
-      saveUninitialized: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      proxy: process.env.NODE_ENV === 'production' ? true : false,
-      store: sessionStore,
-      cookie:{
-        sameSite : process.env.NODE_ENV === 'production' ? 'None' : 'lax',
-        secure : process.env.NODE_ENV === 'production' ? true : false,
-        // httpOnly : process.env.NODE_ENV === 'production' ? true : false,
-      }
-    })
-  );
-  
-app.options("*", cors());
-app.use(cors({
-  origin: ["https://www.socket.fi"],
-  credentials: true,
-  optionsSuccessStatus: 204,
-}));
+  session({
+    name: "sessionSocket",
+    secret: process.env.COOKIE_KEY,
+    resave: false,
+    saveUninitialized: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    proxy: process.env.NODE_ENV === "production" ? true : false,
+    store: sessionStore,
+    cookie: {
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "lax",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      // httpOnly : process.env.NODE_ENV === 'production' ? true : false,
+    },
+  })
+);
 
+app.options("*", cors());
+app.use(
+  cors({
+    origin: ["https://www.app.socket.fi"],
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
 
 // app.use(
 //   cookieSession({
@@ -61,7 +61,6 @@ app.use(cors({
 //     keys: [keys.COOKIE_KEY],
 //     maxAge: 24 * 60 * 60 * 100, // 24 hour
 //     sameSite: "None",
-    
 
 //     // secure: process.env.NODE_ENV === "production", // Enable only in production for HTTPS
 //     // httpOnly: true, // Prevent client-side access to cookies
@@ -92,8 +91,6 @@ app.use(passport.session());
 //   "http://localhost:4000",
 //   "https://auth-twitter.socket.fi",
 // ];
-
-
 
 // app.options("*", cors());
 
