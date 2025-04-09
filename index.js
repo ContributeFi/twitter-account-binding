@@ -35,7 +35,7 @@ app.use(
     secret: process.env.COOKIE_KEY,
     resave: false,
     saveUninitialized: true,
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 3 * 60 * 1000,
     proxy: process.env.NODE_ENV === "production" ? true : false,
     store: sessionStore,
     cookie: {
