@@ -41,7 +41,11 @@ router.get("/logout", (req, res) => {
 
 router.post("/screen-details", async (req, res) => {
   try {
+    console.log("the request body is", req.body);
+
+    return;
     const { twitterId } = req.body;
+
     const response = await axios.get(
       `https://api.twitter.com/2/users/${twitterId}`,
       {
