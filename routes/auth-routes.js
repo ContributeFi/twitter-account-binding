@@ -39,6 +39,33 @@ router.get("/logout", (req, res) => {
   res.redirect(CLIENT_HOME_PAGE_URL);
 });
 
+router.post("/screen-details", async (req, res) => {
+  try {
+    const { twitterId } = req.body;
+    const response = await axios.get(
+      `https://api.twitter.com/2/users/${twitterId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
+        },
+      }
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch user data");
+    }
+
+    const screenName = response.data.data.username; // Extract screen name
+    console.log("Twitter Screen Name:", screenName);
+
+    // Optionally send a response back to the client
+    res.json({ screenName });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // auth with twitter
 router.get("/twitter", passport.authenticate("twitter"));
 
