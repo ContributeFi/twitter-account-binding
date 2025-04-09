@@ -5,10 +5,8 @@ const CLIENT_HOME_PAGE_URL = "http://localhost:5173";
 
 // when login is successful, retrieve user info
 
-const app = express();
-
 // Middleware to parse JSON bodies
-app.use(express.json());
+router.use(express.json());
 router.get("/login/success", (req, res) => {
   if (req.user) {
     res.json({
