@@ -49,7 +49,7 @@ app.use(
 app.options("*", cors());
 app.use(
   cors({
-    origin: ["https://app.socket.fi"],
+    origin: ["https://app.socket.fi", "http://localhost:5173"],
     credentials: true,
     optionsSuccessStatus: 204,
   })
