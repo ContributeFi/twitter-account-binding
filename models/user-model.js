@@ -7,7 +7,6 @@ const userSchema = new Schema({
   twitterId: String,
   age: String,
   profileImageUrl: String,
-  // twitterAccess: String,
 });
 
 const User = mongoose.model("user", userSchema);
