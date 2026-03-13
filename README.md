@@ -1,3 +1,1 @@
-# auth-twitter
-# twitter-auth
-# twitter-account-binding
+## Logic to bind twitter to a contribute acount
