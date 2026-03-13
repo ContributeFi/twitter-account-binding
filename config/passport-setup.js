@@ -1,6 +1,5 @@
 const passport = require("passport");
 const TwitterStrategy = require("passport-twitter");
-const User = require("../models/user-model");
 
 require("dotenv").config();
 
@@ -13,21 +12,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user, done) => {
-  // console.log("=========deserializing========")
-  // console.time("executionTime");
-  // User.findById(id)
-  //   .then((user) => {
-  //     if (!user) {
-  //       return done(null, false);
-  //     }
-    done(null, user);
-    // })
-    // .catch((err) => {
-    //   console.error("Error during deserialization:", err);
-    //   done(err);
-    // });
-
-  // console.timeEnd("executionTime"); 
+  done(null, user);
 });
 
 passport.use(
@@ -35,31 +20,29 @@ passport.use(
     {
       consumerKey: TWITTER_CONSUMER_KEY,
       consumerSecret: TWITTER_CONSUMER_SECRET,
-      callbackURL: process.env.CALL_BACK,
+      callbackURL:
+        process.env.NODE_ENV === "production"
+          ? process.env.CALL_BACK_PROD
+          : process.env.CALL_BACK_DEV,
+      passReqToCallback: true,
     },
-    async (token, tokenSecret, profile, done) => {
+    async (req, token, tokenSecret, profile, done) => {
       try {
-        console.time("executionTime2");
+        const { clientToken } = req.session.twitter_auth_context;
 
-        const currentUser = await User.findOneAndUpdate(
-          { twitterId: profile._json.id_str },
-          {
-            $set: {
-              name: profile._json.name,
-              screenName: profile._json.screen_name,
-              age: profile._json.created_at,
-              profileImageUrl: profile._json.profile_image_url,
-              // twitterAccess: token,
-            },
-          },
-          { new: true, upsert: true }
-        );
-        console.timeEnd("executionTime2"); 
+        let record = {};
 
-        // console.log(currentUser);
-        // console.log("success");
+        const twitterProfile = {
+          name: profile._json.name,
+          screenName: profile._json.screen_name,
+          age: profile._json.created_at,
+          profileImageUrl: profile._json.profile_image_url,
+          // twitterAccess: token,
+        };
+        console.log("session context:", clientToken);
+        console.log("ADD TWITTER ACCOUNT LOGIC");
 
-        done(null, currentUser);
+        done(null, record);
       } catch (err) {
         console.error("Error during authentication:", err);
         done(err);

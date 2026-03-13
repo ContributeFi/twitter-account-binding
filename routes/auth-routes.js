@@ -1,10 +1,15 @@
 const router = require("express").Router();
 const passport = require("passport");
-const CLIENT_HOME_PAGE_URL = "https://app.socket.fi";
+// const CLIENT_HOME_PAGE_URL = "https://app.socket.fi";
 // const CLIENT_HOME_PAGE_URL = "http://localhost:5173";
+const CLIENT_HOME_PAGE_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.CLIENT_HOME_PAGE_PROD
+    : process.env.CLIENT_HOME_PAGE_DEV;
 
+console.log("the client home is", CLIENT_HOME_PAGE_URL);
 // when login is successful, retrieve user info
-router.get("/login/success", (req, res) => {
+router.get("/twitter/success", (req, res) => {
   if (req.user) {
     res.json({
       success: true,
@@ -22,7 +27,7 @@ router.get("/login/success", (req, res) => {
 });
 
 // when login failed, send failed msg
-router.get("/login/failed", (req, res) => {
+router.get("/twitter/failed", (req, res) => {
   res.status(401).json({
     success: false,
     message: "user failed to authenticate.",
@@ -40,14 +45,30 @@ router.get("/logout", (req, res) => {
 });
 
 // auth with twitter
-router.get("/twitter", passport.authenticate("twitter"));
+// router.get("/twitter", passport.authenticate("twitter"));
+
+router.get("/twitter", (req, res, next) => {
+  req.session.twitter_auth_context = {
+    user_id: req.query.user_id,
+  };
+
+  // console.log("before auth:", req.query);
+
+  req.session.twitter_auth_context = {
+    clientToken: req.query.clientToken,
+  };
+
+  console.log("before auth:", req.session.twitter_auth_context);
+
+  passport.authenticate("twitter")(req, res, next);
+});
 
 // redirect to home page after successfully login via twitter
 router.get(
   "/twitter/redirect",
   passport.authenticate("twitter", {
     successRedirect: CLIENT_HOME_PAGE_URL,
-    failureRedirect: "/auth/login/failed",
+    failureRedirect: "/auth/twitter/failed",
   })
 );
 
